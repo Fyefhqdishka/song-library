@@ -1,0 +1,225 @@
+definitions:
+  models.AddSongRequest:
+    properties:
+      group_name:
+        type: string
+      link:
+        type: string
+      release_date:
+        type: string
+      song_title:
+        type: string
+      text:
+        type: string
+    type: object
+  models.Song:
+    properties:
+      group_name:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      release_date:
+        type: string
+      song_title:
+        type: string
+      text:
+        type: string
+      verses:
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /songs:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a song from the library
+      parameters:
+      - description: Song data
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/models.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Song'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete Song
+      tags:
+      - songs
+    get:
+      consumes:
+      - application/json
+      description: Get a list of songs from the library based on filters
+      parameters:
+      - description: Filter by group name
+        in: query
+        name: groupName
+        type: string
+      - description: Filter by song title
+        in: query
+        name: songTitle
+        type: string
+      - description: 'Filter by release date (format: YYYY-MM-DD)'
+        in: query
+        name: releaseDate
+        type: string
+      - description: Filter by song text
+        in: query
+        name: text
+        type: string
+      - description: Filter by song link
+        in: query
+        name: link
+        type: string
+      - description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Song'
+            type: array
+        "400":
+          description: Bad query
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get Songs
+      tags:
+      - songs
+    post:
+      consumes:
+      - application/json
+      description: Add a new song to the library
+      parameters:
+      - description: Song data
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddSongRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Song'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Add a new song
+      tags:
+      - songs
+  /songs/verses:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves verses of a song by its title with pagination
+      parameters:
+      - description: Song title
+        in: query
+        name: songTitle
+        required: true
+        type: string
+      - description: Limit of verses per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset number
+        in: query
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Verses list
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Invalid page or limit number
+          schema:
+            type: string
+        "500":
+          description: Error retrieving verses
+          schema:
+            type: string
+      summary: Get song verses
+      tags:
+      - songs
+  /update-text:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет текст песни по song_title
+      parameters:
+      - description: Название песни
+        in: query
+        name: song_title
+        required: true
+        type: string
+      - description: Новый текст песни
+        in: body
+        name: text
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Текст песни обновлен
+          schema:
+            type: string
+        "400":
+          description: Некорректный запрос
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Update Song Text
+      tags:
+      - songs
+swagger: "2.0"
