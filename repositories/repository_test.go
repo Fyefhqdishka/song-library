@@ -1,4 +1,4 @@
-package repository_test
+package repositories_test
 
 import (
 	"github.com/DATA-DOG/go-sqlmock"
